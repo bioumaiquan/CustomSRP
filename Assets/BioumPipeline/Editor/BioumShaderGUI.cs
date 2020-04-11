@@ -10,12 +10,16 @@ public class BioumShaderGUI : ShaderGUI
 	bool showPresets;
 	public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
 	{
+        EditorGUI.BeginChangeCheck();
+
 		base.OnGUI(materialEditor, properties);
 		editor = materialEditor;
 		materials = materialEditor.targets;
 		this.properties = properties;
 
-		EditorGUILayout.Space();
+        BakedEmission();
+
+        EditorGUILayout.Space();
 		showPresets = EditorGUILayout.Foldout(showPresets, "预设", true);
 
 		if (showPresets)
@@ -25,11 +29,35 @@ public class BioumShaderGUI : ShaderGUI
 			FadePreset();
 			TransparentPreset();
 		}
+        if (EditorGUI.EndChangeCheck())
+        {
+            SetShadowCasterPass();
+            CopyLightMappingProperties();
+        }
 	}
 
-	void SetProperty(string name, float value)
+    void BakedEmission()
+    {
+        EditorGUI.BeginChangeCheck();
+        editor.LightmapEmissionProperty();
+        if (EditorGUI.EndChangeCheck())
+        {
+            foreach (Material m in materials)
+            {
+                m.globalIlluminationFlags &= ~MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+            }
+        }
+    }
+
+	bool SetProperty(string name, float value)
 	{
-		FindProperty(name, properties).floatValue = value;
+        MaterialProperty property = FindProperty(name, properties, false);
+        if (property != null)
+        {
+            property.floatValue = value;
+            return true;
+        }
+        return false;
 	}
 
 	void SetKeyword(string keyword, bool enabled)
@@ -72,7 +100,53 @@ public class BioumShaderGUI : ShaderGUI
 		}
 	}
 
-	bool PresetButton(string name)
+    enum ShadowMode
+    {
+        On, Clipped, Dithered, Off
+    }
+    ShadowMode shadowMode
+    {
+        set
+        {
+            if (SetProperty("_Shadows", (float)value))
+            {
+                SetKeyword("_SHADOWS_CLIP", value == ShadowMode.Clipped);
+                SetKeyword("_SHADOWS_DITHER", value == ShadowMode.Dithered);
+            }
+        }
+    }
+    void SetShadowCasterPass()
+    {
+        MaterialProperty shadows = FindProperty("_Shadows", properties, false);
+        if (shadows == null || shadows.hasMixedValue)
+        {
+            return;
+        }
+        bool enabled = shadows.floatValue < (float)ShadowMode.Off;
+        foreach (Material m in materials)
+        {
+            m.SetShaderPassEnabled("ShadowCaster", enabled);
+        }
+    }
+
+    void CopyLightMappingProperties() //因为unity在烘焙时通过硬编码识别贴图, 所以需要把当前使用的贴图复制给_MainTex
+    {
+        MaterialProperty mainTex = FindProperty("_MainTex", properties, false);
+        MaterialProperty baseMap = FindProperty("_BaseMap", properties, false);
+        if (mainTex != null && baseMap != null)
+        {
+            mainTex.textureValue = baseMap.textureValue;
+            mainTex.textureScaleAndOffset = baseMap.textureScaleAndOffset;
+        }
+        MaterialProperty color = FindProperty("_Color", properties, false);
+        MaterialProperty baseColor = FindProperty("_BaseColor", properties, false);
+        if (color != null && baseColor != null)
+        {
+            color.colorValue = baseColor.colorValue;
+        }
+    }
+
+    bool PresetButton(string name)
 	{
 		if (GUILayout.Button(name))
 		{
@@ -92,7 +166,8 @@ public class BioumShaderGUI : ShaderGUI
 			DstBlend = BlendMode.Zero;
 			ZWrite = true;
 			RenderQueue = RenderQueue.Geometry;
-		}
+            shadowMode = ShadowMode.On;
+        }
 	}
 
 	void ClipPreset()
@@ -105,8 +180,9 @@ public class BioumShaderGUI : ShaderGUI
 			DstBlend = BlendMode.Zero;
 			ZWrite = true;
 			RenderQueue = RenderQueue.AlphaTest;
-		}
-	}
+            shadowMode = ShadowMode.Clipped;
+        }
+    }
 
 	void FadePreset()
 	{
@@ -118,6 +194,7 @@ public class BioumShaderGUI : ShaderGUI
 			DstBlend = BlendMode.OneMinusSrcAlpha;
 			ZWrite = false;
 			RenderQueue = RenderQueue.Transparent;
+            shadowMode = ShadowMode.Dithered;
 		}
 	}
 
@@ -131,6 +208,7 @@ public class BioumShaderGUI : ShaderGUI
 			DstBlend = BlendMode.OneMinusSrcAlpha;
 			ZWrite = false;
 			RenderQueue = RenderQueue.Transparent;
+            shadowMode = ShadowMode.Dithered;
 		}
 	}
 }

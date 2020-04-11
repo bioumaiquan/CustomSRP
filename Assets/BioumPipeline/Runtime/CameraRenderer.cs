@@ -76,7 +76,8 @@ namespace BioumRP
             DrawingSettings drawingSettings = new DrawingSettings(bioumShaderTagID[0], sortingSettings)
             {
                 enableDynamicBatching = useDynamicBatching,
-                enableInstancing = useGPUInstancing
+                enableInstancing = useGPUInstancing,
+                perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume,
             };
             for (int i = 0; i < bioumShaderTagID.Length; i++)
             {

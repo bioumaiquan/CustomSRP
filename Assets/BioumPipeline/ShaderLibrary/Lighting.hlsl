@@ -31,9 +31,10 @@ half3 GetPbrLighting(Surface surface, Light light, BRDF brdf)
 {
     return IncomingLight(surface, light) * DirectBRDF(surface, brdf, light);
 }
-half3 GetPbrLighting(Surface surface, BRDF brdf)
+half3 GetPbrLighting(Surface surface, BRDF brdf, GI gi)
 {
     half3 color = 0; 
+    color = gi.diffuse * brdf.diffuse;
     int dirLightCount = GetDirectionalLightCount();
     ShadowData shadowData = GetShadowData(surface);
     for (int i = 0; i < dirLightCount; i++)
@@ -41,6 +42,7 @@ half3 GetPbrLighting(Surface surface, BRDF brdf)
         Light light = GetDirectionalLight(i, surface, shadowData);
         color += GetPbrLighting(surface, light, brdf);
     }
+    
     return color;
 }
 //pbr end

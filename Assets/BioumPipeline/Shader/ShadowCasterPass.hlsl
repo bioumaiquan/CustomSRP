@@ -1,16 +1,6 @@
 ﻿#ifndef BIOUM_SHADOW_CASTER_PASS_INCLUDE
 #define BIOUM_SHADOW_CASTER_PASS_INCLUDE
 
-#include "../ShaderLibrary/Common.hlsl"
-
-TEXTURE2D(_BaseMap);
-SAMPLER(sampler_BaseMap);
-
-UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
-    UNITY_DEFINE_INSTANCED_PROP(half4, _BaseColor)
-    UNITY_DEFINE_INSTANCED_PROP(half4, _BaseMap_ST)
-UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
-
 struct appdata 
 {
     float3 positionOS : POSITION;
@@ -40,9 +30,8 @@ v2f ShadowCasterVert(appdata v)
         o.positionCS.z = max(o.positionCS.z, o.positionCS.w * UNITY_NEAR_CLIP_VALUE);
     #endif
 
-    #if defined(_ALPHA_TEST)
-        float4 mainTexST = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseMap_ST);
-        o.baseUV = v.baseUV * mainTexST.xy + mainTexST.zw;
+    #if defined(_SHADOWS_CLIP) || defined(_SHADOWS_DITHER)
+        o.baseUV = TransformBaseUV(v.baseUV);
     #endif
 
     return o;
@@ -51,11 +40,15 @@ v2f ShadowCasterVert(appdata v)
 void ShadowCasterFrag(v2f i)
 {
     UNITY_SETUP_INSTANCE_ID(i);
-    #if defined(_ALPHA_TEST)
-        half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.baseUV);
-        half4 baseColor = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColor);
-        baseMap *= baseColor;
-        clip(baseMap.a - 0.5);
+    #if defined(_SHADOWS_CLIP) || defined(_SHADOWS_DITHER)
+        half4 baseMap = GetBase(i.baseUV);
+
+        #if defined(_SHADOWS_CLIP)
+            clip(baseMap.a - 0.5);
+        #elif defined(_SHADOWS_DITHER)
+            float dither = InterleavedGradientNoise(i.positionCS.xy, 0);
+            clip(baseMap.a - dither);
+        #endif
     #endif
 }
 
