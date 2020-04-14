@@ -16,14 +16,17 @@ namespace BioumRP
 		CullingResults cullingResults;
 		ShadowSettings settings;
 		int shadowedDirectionalLightCount;
+        bool useShadowMask;
 
-		public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings settings)
+        public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings settings)
 		{
 			this.context = context;
 			this.cullingResults = cullingResults;
 			this.settings = settings;
 			shadowedDirectionalLightCount = 0;
-		}
+
+            useShadowMask = false;
+        }
 
 		const int maxShadowedDirectionalLightCount = 4, maxCascadeCount = 4;
 		struct ShadowedDirectionalLight
@@ -34,23 +37,36 @@ namespace BioumRP
 		}
 		ShadowedDirectionalLight[] shadowedDirectionalLights = new ShadowedDirectionalLight[maxShadowedDirectionalLightCount];
 
-		public Vector3 ReserveDirectionalShadows(Light light, int visibleLightIndex)
+		public Vector4 ReserveDirectionalShadows(Light light, int visibleLightIndex)
 		{
 			if (shadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
 				light.shadows != LightShadows.None &&
-				light.shadowStrength > 0f &&
-				cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b)
-				)
+				light.shadowStrength > 0f )
 			{
+                float maskChannel = -1;
+                LightBakingOutput lightBaking = light.bakingOutput;
+                if (lightBaking.lightmapBakeType == LightmapBakeType.Mixed &&
+                    lightBaking.mixedLightingMode == MixedLightingMode.Shadowmask)
+                {
+                    useShadowMask = true;
+                    maskChannel = lightBaking.occlusionMaskChannel;
+                }
+                if (!cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b))
+                {
+                    return new Vector4(-light.shadowStrength, 0, 0, maskChannel);
+                }
 				shadowedDirectionalLights[shadowedDirectionalLightCount] = new ShadowedDirectionalLight()
 				{
 					visibleLightIndex = visibleLightIndex,
 					slopeScaleBias = light.shadowBias,
 					nearPlaneOffset = light.shadowNearPlane,
 				};
-				return new Vector3(light.shadowStrength, settings.directional.cascadeCount * shadowedDirectionalLightCount++, light.shadowNormalBias);
+				return new Vector4(light.shadowStrength, 
+                    settings.directional.cascadeCount * shadowedDirectionalLightCount++, 
+                    light.shadowNormalBias, 
+                    maskChannel);
 			}
-			return Vector3.zero;
+            return new Vector4(0, 0, 0, -1);
 		}
 
 		public void Render()
@@ -59,7 +75,13 @@ namespace BioumRP
 			{
 				RenderDirectionalShadows();
 			}
-		}
+            buffer.BeginSample(bufferName);
+
+            SetKeywords(shadowMaskKeywords, useShadowMask ?
+                QualitySettings.shadowmaskMode == ShadowmaskMode.Shadowmask ? 0 : 1 : -1);
+            buffer.EndSample(bufferName);
+            ExecuteBuffer();
+        }
 
 		static readonly int dirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas");
 		static readonly int dirShadowMatricesId = Shader.PropertyToID("_DirectionalShadowMatrices");
@@ -97,8 +119,8 @@ namespace BioumRP
 			buffer.SetGlobalMatrixArray(dirShadowMatricesId, dirShadowMatrices);
 			buffer.SetGlobalVector(shadowAtlastSizeId, new Vector4(atlasSize, 1f / atlasSize));
 
-			SetDirectionalKeywords(directionalFilterKeywords, (int)settings.directional.filterMode - 1);
-			SetDirectionalKeywords(cascadeBlendKeywords, (int)settings.directional.cascadeBlendMode - 1);
+			SetKeywords(directionalFilterKeywords, (int)settings.directional.filterMode - 1);
+			SetKeywords(cascadeBlendKeywords, (int)settings.directional.cascadeBlendMode - 1);
 			
 			buffer.EndSample(bufferName);
 			ExecuteBuffer();
@@ -115,8 +137,13 @@ namespace BioumRP
 			"_CASCADE_BLEND_SOFT",
 			"_CASCADE_BLEND_DITHER",
 		};
+        static string[] shadowMaskKeywords =
+        {
+            "_SHADOW_MASK_ALWAYS",
+            "_SHADOW_MASK_DISTANCE",
+        };
 
-		void SetDirectionalKeywords(string[] keywords, int enabledIndex)
+        void SetKeywords(string[] keywords, int enabledIndex)
 		{
 			for (int i = 0; i < keywords.Length; i++)
 			{

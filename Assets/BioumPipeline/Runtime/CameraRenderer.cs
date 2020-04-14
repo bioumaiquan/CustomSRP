@@ -77,7 +77,10 @@ namespace BioumRP
             {
                 enableDynamicBatching = useDynamicBatching,
                 enableInstancing = useGPUInstancing,
-                perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume,
+                perObjectData = 
+                    PerObjectData.Lightmaps | PerObjectData.ShadowMask | 
+                    PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+                    PerObjectData.LightProbeProxyVolume | PerObjectData.OcclusionProbeProxyVolume
             };
             for (int i = 0; i < bioumShaderTagID.Length; i++)
             {

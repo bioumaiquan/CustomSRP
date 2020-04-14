@@ -37,12 +37,14 @@ half3 GetPbrLighting(Surface surface, BRDF brdf, GI gi)
     color = gi.diffuse * brdf.diffuse;
     int dirLightCount = GetDirectionalLightCount();
     ShadowData shadowData = GetShadowData(surface);
+    shadowData.shadowMask = gi.shadowMask;
     for (int i = 0; i < dirLightCount; i++)
     {
         Light light = GetDirectionalLight(i, surface, shadowData);
         color += GetPbrLighting(surface, light, brdf);
     }
-    
+
+
     return color;
 }
 //pbr end
