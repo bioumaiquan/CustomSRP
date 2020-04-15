@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 1, g: 0.097600296, b: 0, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -71,7 +71,7 @@ LightmapSettings:
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
-    m_MixedBakeMode: 2
+    m_MixedBakeMode: 0
     m_BakeBackend: 2
     m_PVRSampling: 1
     m_PVRDirectSampleCount: 32
@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 5f21917b5c5af1e439fd9093c4304f5d,
     type: 2}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -263,9 +263,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e089e5e445f86ee469ebc91b393a8d90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseColor: {r: 0.509434, g: 0.12255251, b: 0.12255251, a: 1}
+  baseColor: {r: 0.46226418, g: 0.128649, b: 0.128649, a: 1}
   metallic: 1
-  smoothness: 0.5
+  smoothness: 0.684
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!23 &56456127
 MeshRenderer:
@@ -593,7 +593,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370215714}
   m_LocalRotation: {x: -0.16034418, y: -0.5969527, z: -0.04425171, w: 0.7848433}
-  m_LocalPosition: {x: 3.2349365, y: 0.31, z: 2.50292}
+  m_LocalPosition: {x: 6.584, y: 0.31, z: 1.041}
   m_LocalScale: {x: 1.2355, y: 1.2355, z: 1.2354999}
   m_Children: []
   m_Father: {fileID: 179415792}
@@ -611,7 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e089e5e445f86ee469ebc91b393a8d90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}
+  baseColor: {r: 1, g: 0, b: 0, a: 1}
   metallic: 0
   smoothness: 0.5
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
@@ -709,7 +709,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseColor: {r: 1, g: 1, b: 1, a: 1}
   metallic: 0
-  smoothness: 0.812
+  smoothness: 0.923
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!23 &385516416
 MeshRenderer:
@@ -785,9 +785,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496258737}
   m_LocalRotation: {x: -0, y: -0.8148168, z: -0, w: 0.5797186}
-  m_LocalPosition: {x: 5.113, y: 0.98, z: -2.072}
+  m_LocalPosition: {x: 6.178, y: 0.98, z: -1.802}
   m_LocalScale: {x: 1.4855652, y: 1.4855652, z: 1.4855652}
-  m_Children: []
+  m_Children:
+  - {fileID: 837516057}
   m_Father: {fileID: 179415792}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -805,7 +806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseColor: {r: 1, g: 1, b: 1, a: 1}
   metallic: 0
-  smoothness: 0.761
+  smoothness: 0.771
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!23 &496258740
 MeshRenderer:
@@ -1084,7 +1085,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &643572026
 Transform:
@@ -1190,7 +1191,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &819133635
 Transform:
@@ -1219,6 +1220,70 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: -109.13801, z: 0}
+--- !u!1 &837516055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 837516057}
+  - component: {fileID: 837516056}
+  m_Layer: 0
+  m_Name: Reflection Probe
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!215 &837516056
+ReflectionProbe:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837516055}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Type: 0
+  m_Mode: 0
+  m_RefreshMode: 1
+  m_TimeSlicingMode: 1
+  m_Resolution: 64
+  m_UpdateFrequency: 0
+  m_BoxSize: {x: 1, y: 1, z: 1}
+  m_BoxOffset: {x: 0, y: 0, z: 0}
+  m_NearClip: 0.3
+  m_FarClip: 1000
+  m_ShadowDistance: 100
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IntensityMultiplier: 1
+  m_BlendDistance: 1
+  m_HDR: 1
+  m_BoxProjection: 0
+  m_RenderDynamicObjects: 0
+  m_UseOcclusionCulling: 1
+  m_Importance: 1
+  m_CustomBakedTexture: {fileID: 0}
+--- !u!4 &837516057
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837516055}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 496258738}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &848369205
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,7 +1366,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &848610278
 Transform:
   m_ObjectHideFlags: 0
@@ -1490,7 +1555,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &893655695
 Transform:
@@ -1586,7 +1651,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &923882106
 Transform:
@@ -1765,7 +1830,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &980170443
 Transform:
@@ -2492,7 +2557,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1181175714}
   m_LocalRotation: {x: 0.08365143, y: -0.58195734, z: 0.10337209, w: 0.8022732}
-  m_LocalPosition: {x: 3.189473, y: 0.31, z: -0.23321494}
+  m_LocalPosition: {x: 3.149, y: 0.31, z: -2.67}
   m_LocalScale: {x: 1.2279, y: 1.2279001, z: 1.2279}
   m_Children: []
   m_Father: {fileID: 179415792}
@@ -2510,9 +2575,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e089e5e445f86ee469ebc91b393a8d90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseColor: {r: 0.5975744, g: 0.2728729, b: 0.7924528, a: 0.49803922}
-  metallic: 0
-  smoothness: 0.851
+  baseColor: {r: 0.5754717, g: 0.5727572, b: 0.5727572, a: 1}
+  metallic: 1
+  smoothness: 0.774
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!23 &1181175717
 MeshRenderer:
@@ -2674,7 +2739,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1249029114
 Transform:
@@ -2961,7 +3026,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!64 &1357379260
 MeshCollider:
@@ -3052,7 +3117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseColor: {r: 0.48227656, g: 0.764151, b: 0.28475437, a: 1}
   metallic: 0
-  smoothness: 0.5
+  smoothness: 0.928
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1373827740
 GameObject:
@@ -3264,7 +3329,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1440489054
 Transform:
@@ -3373,7 +3438,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1482049998
 Transform:
@@ -3712,13 +3777,13 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 1
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 6.928e-42, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 5.66e-43, y: -0.00000010053856, z: 5.65e-43, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 5
@@ -3754,7 +3819,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1721371306
 Transform:
@@ -3959,7 +4024,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1740148238
 Transform:
@@ -4154,7 +4219,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1789384660
 Transform:
@@ -4183,8 +4248,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseColor: {r: 0.21791564, g: 0.6662148, b: 0.7830189, a: 1}
-  metallic: 1
-  smoothness: 0.222
+  metallic: 0
+  smoothness: 0.528
   emissionColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!23 &1789384662
 MeshRenderer:
@@ -4399,7 +4464,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1983038519
 Transform:
@@ -4548,7 +4613,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &2104903341
 Transform:

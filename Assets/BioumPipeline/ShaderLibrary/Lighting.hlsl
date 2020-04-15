@@ -26,6 +26,7 @@ half3 GetLambertLighting (Surface surface)
 }
 //lambert end
 
+
 //pbr start
 half3 GetPbrLighting(Surface surface, Light light, BRDF brdf)
 {
@@ -33,11 +34,11 @@ half3 GetPbrLighting(Surface surface, Light light, BRDF brdf)
 }
 half3 GetPbrLighting(Surface surface, BRDF brdf, GI gi)
 {
-    half3 color = 0; 
-    color = gi.diffuse * brdf.diffuse;
-    int dirLightCount = GetDirectionalLightCount();
     ShadowData shadowData = GetShadowData(surface);
     shadowData.shadowMask = gi.shadowMask;
+
+    half3 color = IndirectBRDF(surface, brdf, gi.diffuse, gi.specular); 
+    int dirLightCount = GetDirectionalLightCount();
     for (int i = 0; i < dirLightCount; i++)
     {
         Light light = GetDirectionalLight(i, surface, shadowData);

@@ -68,7 +68,7 @@ half4 LitFrag(v2f i) : SV_TARGET
     #if defined(_PREMULTIPLY_ALPHA)
         brdf.diffuse *= surface.alpha;
     #endif
-    GI gi = GetGI(GI_FRAGMENT_DATA(i), surface);
+    GI gi = GetGI(GI_FRAGMENT_DATA(i), surface, brdf);
     //half3 color = GetLambertLighting(surface);
     half3 color = GetPbrLighting(surface, brdf, gi);
     color += GetEmission(i.baseUV);

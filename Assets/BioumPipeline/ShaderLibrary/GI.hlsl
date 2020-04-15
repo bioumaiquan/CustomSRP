@@ -2,6 +2,7 @@
 #define BIOUM_GI_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/EntityLighting.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
 
 #if defined(LIGHTMAP_ON)
 	#define GI_ATTRIBUTE_DATA float2 lightMapUV : TEXCOORD1;
@@ -33,6 +34,16 @@ half3 SampleLightMap (float2 lightMapUV)
 	#else
 		return 0.0;
 	#endif
+}
+
+TEXTURECUBE(unity_SpecCube0);
+SAMPLER(samplerunity_SpecCube0);
+half3 SampleEnvironment (Surface surfaceWS, BRDF brdf) 
+{
+	half3 uvw = reflect(-surfaceWS.viewDirection, surfaceWS.normal);
+	half lod = PerceptualRoughnessToMipmapLevel(brdf.perceptualRoughness);
+	half4 environment = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, uvw, lod);
+	return DecodeHDREnvironment(environment, unity_SpecCube0_HDR);
 }
 
 TEXTURE3D_FLOAT(unity_ProbeVolumeSH);
@@ -94,13 +105,15 @@ half4 SampleBakedShadows (float2 lightMapUV, Surface surfaceWS)
 struct GI 
 {
 	half3 diffuse;
+	half3 specular;
 	ShadowMask shadowMask;
 };
 
-GI GetGI (float2 lightMapUV, Surface surfaceWS) 
+GI GetGI (float2 lightMapUV, Surface surfaceWS, BRDF brdf) 
 {
 	GI gi;
 	gi.diffuse = SampleLightMap(lightMapUV) + SampleLightProbe(surfaceWS);
+	gi.specular = SampleEnvironment(surfaceWS, brdf);
 
 	gi.shadowMask.always = false;
 	gi.shadowMask.distance = false;
