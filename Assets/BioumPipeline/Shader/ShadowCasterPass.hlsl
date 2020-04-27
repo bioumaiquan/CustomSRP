@@ -40,6 +40,8 @@ v2f ShadowCasterVert(appdata v)
 void ShadowCasterFrag(v2f i)
 {
     UNITY_SETUP_INSTANCE_ID(i);
+    ClipLOD(i.positionCS.xy, unity_LODFade.x);
+
     #if defined(_SHADOWS_CLIP) || defined(_SHADOWS_DITHER)
         half4 baseMap = GetBase(i.baseUV);
 

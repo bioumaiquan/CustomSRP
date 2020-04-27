@@ -21,7 +21,11 @@ public class PerObjectMaterialProperties : MonoBehaviour
 
     static MaterialPropertyBlock block;
 
-	void OnValidate()
+    private void OnEnable()
+    {
+        OnValidate();
+    }
+    void OnValidate()
 	{
 		if (block == null)
 		{

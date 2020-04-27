@@ -47,6 +47,7 @@ v2f LitVert(appdata v)
 half4 LitFrag(v2f i) : SV_TARGET
 {
     UNITY_SETUP_INSTANCE_ID(i);
+	ClipLOD(i.positionCS.xy, unity_LODFade.x);
 
     half4 baseMap = GetBase(i.baseUV);
     #if defined(_ALPHA_TEST)
