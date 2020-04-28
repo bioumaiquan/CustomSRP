@@ -66,7 +66,7 @@ namespace BioumRP
         partial void PrepareBuffer()
         {
             Profiler.BeginSample("Editor Only");
-            buffer.name = SampleName = camera.name;
+            mainBuffer.name = SampleName = camera.name;
             Profiler.EndSample();
         }
 #else

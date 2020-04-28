@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
+using BioumRP.PostProcess;
 
 namespace BioumRP
 {
@@ -8,16 +9,26 @@ namespace BioumRP
         ScriptableRenderContext context;
         Camera camera;
 
-        const string bufferName = "Render Camera";
-        CommandBuffer buffer = new CommandBuffer
+        const string mainBufferName = "Render Camera";
+        CommandBuffer mainBuffer = new CommandBuffer
         {
-            name = bufferName
+            name = mainBufferName
+        };
+
+        const string postProcessBufferName = "Post Process";
+        CommandBuffer postProcessBuffer = new CommandBuffer
+        {
+            name = postProcessBufferName
         };
 
         CullingResults cullingResults;
         Lighting lighting = new Lighting();
 
-        public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
+        static int cameraColorTexID = Shader.PropertyToID("_CameraColorTexture");
+        static int cameraDepthTexID = Shader.PropertyToID("_CameraDepthTexture");
+
+        public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing, 
+            ShadowSettings shadowSettings, BioumPostProcessStack postProcessStack)
         {
             this.context = context;
             this.camera = camera;
@@ -30,16 +41,34 @@ namespace BioumRP
                 return;
             }
 
-            buffer.BeginSample(SampleName);
+            mainBuffer.BeginSample(SampleName);
             ExecuteBuffer();
             lighting.Setup(context, cullingResults, shadowSettings);
-            buffer.EndSample(SampleName);
+            mainBuffer.EndSample(SampleName);
+
+            if (postProcessStack)
+            {
+                mainBuffer.GetTemporaryRT(cameraColorTexID, camera.pixelWidth, camera.pixelHeight, 0, FilterMode.Bilinear);
+                mainBuffer.GetTemporaryRT(cameraDepthTexID, camera.pixelWidth, camera.pixelHeight, 24, FilterMode.Point, RenderTextureFormat.Depth);
+                mainBuffer.SetRenderTarget(
+                    cameraColorTexID, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store,
+                    cameraDepthTexID, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+            }
 
             RenderSetup();
 
             DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
             DrawUnsupportedShaders();
             DrawGizmos();
+
+            if (postProcessStack)
+            {
+                postProcessStack.Render(postProcessBuffer, cameraColorTexID, cameraDepthTexID);
+                context.ExecuteCommandBuffer(postProcessBuffer);
+                postProcessBuffer.Clear();
+                mainBuffer.ReleaseTemporaryRT(cameraColorTexID);
+                mainBuffer.ReleaseTemporaryRT(cameraDepthTexID);
+            }
 
             lighting.Cleanup();
             Submit();
@@ -51,12 +80,12 @@ namespace BioumRP
             context.SetupCameraProperties(camera);
             CameraClearFlags flags = camera.clearFlags;
 
-            buffer.ClearRenderTarget(
+            mainBuffer.ClearRenderTarget(
                 flags <= CameraClearFlags.Depth,
                 flags == CameraClearFlags.Color,
                 flags == CameraClearFlags.Color ? camera.backgroundColor.linear : Color.clear);
 
-            buffer.BeginSample(SampleName);
+            mainBuffer.BeginSample(SampleName);
             ExecuteBuffer();
         }
 
@@ -102,7 +131,7 @@ namespace BioumRP
         //提交上下文
         void Submit()
         {
-            buffer.EndSample(SampleName);
+            mainBuffer.EndSample(SampleName);
             ExecuteBuffer();
             context.Submit();
         }
@@ -110,8 +139,8 @@ namespace BioumRP
         //执行
         void ExecuteBuffer()
         {
-            context.ExecuteCommandBuffer(buffer);
-            buffer.Clear();
+            context.ExecuteCommandBuffer(mainBuffer);
+            mainBuffer.Clear();
         }
 
         //判断相机范围内是否有模型, 并返回模型的信息

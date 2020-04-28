@@ -1,26 +1,32 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
-using BioumRP;
+using BioumRP.PostProcess;
 
-public class BioumRenderPipeline : RenderPipeline
+namespace BioumRP
 {
-    bool useDynamicBatching, useGPUInstancing;
-    ShadowSettings shadowSettings;
-    public BioumRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatching, ShadowSettings shadowSettings)
+    public class BioumRenderPipeline : RenderPipeline
     {
-        this.useDynamicBatching = useDynamicBatching;
-        this.useGPUInstancing = useGPUInstancing;
-        GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatching;
-        GraphicsSettings.lightsUseLinearIntensity = true;
-        this.shadowSettings = shadowSettings;
-    }
+        bool useDynamicBatching, useGPUInstancing;
+        ShadowSettings shadowSettings;
 
-    CameraRenderer renderer = new CameraRenderer();
-    protected override void Render(ScriptableRenderContext context, Camera[] cameras)
-    {
-        foreach (Camera camera in cameras)
+        public BioumRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatching,
+            ShadowSettings shadowSettings)
         {
-            renderer.Render(context, camera, useDynamicBatching, useGPUInstancing, shadowSettings);
+            this.useDynamicBatching = useDynamicBatching;
+            this.useGPUInstancing = useGPUInstancing;
+            GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatching;
+            GraphicsSettings.lightsUseLinearIntensity = true;
+            this.shadowSettings = shadowSettings;
+        }
+
+        CameraRenderer renderer = new CameraRenderer();
+        protected override void Render(ScriptableRenderContext context, Camera[] cameras)
+        {
+            foreach (Camera camera in cameras)
+            {
+                BioumPostProcessBehaviour behaviour = camera.GetComponent<BioumPostProcessBehaviour>();
+                renderer.Render(context, camera, useDynamicBatching, useGPUInstancing, shadowSettings, behaviour?.PostProcessStack);
+            }
         }
     }
 }
