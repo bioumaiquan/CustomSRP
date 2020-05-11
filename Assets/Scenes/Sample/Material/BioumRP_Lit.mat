@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: BioumRP_Lit
   m_Shader: {fileID: 4800000, guid: d248d1493dec6bd40af20736d15e2ba5, type: 3}
-  m_ShaderKeywords: _ALPHABLEND_ON _EMISSION _SHADOWS_ON
+  m_ShaderKeywords: _ALPHABLEND_ON _EMISSION
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -62,9 +62,10 @@ Material:
     m_Floats:
     - _AlphaTest: 0
     - _BumpScale: 1
-    - _Cutoff: 0.5
+    - _Cutoff: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _Fresnel: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -74,7 +75,7 @@ Material:
     - _Parallax: 0.02
     - _PremulAlpha: 0
     - _Shadows: 0
-    - _Smoothness: 0.1
+    - _Smoothness: 0.941
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -82,5 +83,5 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.31866318, g: 0.58082944, b: 0.8773585, a: 0.99215686}
-    - _Color: {r: 0.31866315, g: 0.58082944, b: 0.8773585, a: 0.99215686}
+    - _Color: {r: 0.57547164, g: 0.5727571, b: 0.5727571, a: 0.34901962}
     - _EmissionColor: {r: 7.0417585, g: 2.676016, b: 0.8968278, a: 1}

@@ -18,6 +18,8 @@ public class PerObjectMaterialProperties : MonoBehaviour
 	public float smoothness = 0.5f;
     [SerializeField, ColorUsage(false, true)]
     Color emissionColor = Color.black;
+    [Min(0)]
+    public float test = 1;
 
     static MaterialPropertyBlock block;
 

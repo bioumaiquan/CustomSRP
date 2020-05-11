@@ -45,7 +45,6 @@ half3 GetPbrLighting(Surface surface, BRDF brdf, GI gi)
         color += GetPbrLighting(surface, light, brdf);
     }
 
-
     return color;
 }
 //pbr end

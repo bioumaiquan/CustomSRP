@@ -7,6 +7,7 @@
 #include "../ShaderLibrary/BRDF.hlsl"
 #include "../ShaderLibrary/GI.hlsl"
 #include "../ShaderLibrary/Lighting.hlsl"
+#include "../ShaderLibrary/Fog.hlsl"
 
 struct appdata 
 {
@@ -24,6 +25,7 @@ struct v2f
     half3 normalWS : NORMAL;
     float2 baseUV : TEXCOORD1;
     half3 viewDirWS : TEXCOORD2;
+    float fogFactor : TEXCOORD3;
     GI_VARYINGS_DATA
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -39,6 +41,7 @@ v2f LitVert(appdata v)
     o.positionCS = TransformWorldToHClip(o.positionWS);
     o.normalWS = TransformObjectToWorldNormal(v.normalOS);
     o.viewDirWS = SafeNormalize(_WorldSpaceCameraPos - o.positionWS);
+    o.fogFactor = ComputeFogFactor(o.positionWS, 1);
 
     o.baseUV = TransformBaseUV(v.baseUV);
     return o;
@@ -51,7 +54,8 @@ half4 LitFrag(v2f i) : SV_TARGET
 
     half4 baseMap = GetBase(i.baseUV);
     #if defined(_ALPHA_TEST)
-        clip(baseMap.a - 0.5);
+        half cutoff = GetCutoff(i.baseUV);
+        clip(baseMap.a - cutoff);
     #endif
 
     Surface surface;
@@ -64,6 +68,7 @@ half4 LitFrag(v2f i) : SV_TARGET
     surface.viewDirection = i.viewDirWS;
     surface.depth = -TransformWorldToView(i.positionWS).z;
     surface.dither = InterleavedGradientNoise(i.positionCS.xy, 0);
+    surface.fresnelStrength = GetFresnel(i.baseUV);
 
     BRDF brdf = GetBRDF(surface);
     #if defined(_PREMULTIPLY_ALPHA)
@@ -73,6 +78,9 @@ half4 LitFrag(v2f i) : SV_TARGET
     //half3 color = GetLambertLighting(surface);
     half3 color = GetPbrLighting(surface, brdf, gi);
     color += GetEmission(i.baseUV);
+
+    i.fogFactor = ComputeFogFactor(i.positionWS, 1);
+    color = MixFogColor(color, i.fogFactor, surface.viewDirection);
 
     return half4(color, surface.alpha);
 }

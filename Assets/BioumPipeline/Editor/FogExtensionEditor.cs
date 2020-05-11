@@ -16,8 +16,10 @@ public class BiouFogExtensionEditor : Editor
         public static GUIContent enableHeightFog = new GUIContent("高度雾");
         public static GUIContent heightStart = new GUIContent("起始高度");
         public static GUIContent heightFalloff = new GUIContent("过度衰减");
-        public static GUIContent enableSunScattering = new GUIContent("阳光散射效果");
-        public static GUIContent SunScatteringColor = new GUIContent("阳光颜色");
+        public static GUIContent enableSunScattering = new GUIContent("散射");
+        public static GUIContent SunScatteringColor = new GUIContent("颜色");
+        public static GUIContent SunScatteringStrength = new GUIContent("散射强度");
+        public static GUIContent SunScatteringRange = new GUIContent("散射范围");
     }
 
     public override void OnInspectorGUI()
@@ -72,7 +74,9 @@ public class BiouFogExtensionEditor : Editor
         EditorGUI.indentLevel++;
         if (sunScatteringToggle.boolValue)
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("SunScatteringColor"), Styles.SunScatteringColor);
+            //EditorGUILayout.PropertyField(serializedObject.FindProperty("SunScatteringColor"), Styles.SunScatteringColor);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("sunScatteringStrength"), Styles.SunScatteringStrength);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("sunScatteringRange"), Styles.SunScatteringRange);
         }
         EditorGUI.indentLevel--;
     }

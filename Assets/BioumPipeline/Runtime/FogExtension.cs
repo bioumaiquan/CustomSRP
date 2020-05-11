@@ -9,23 +9,31 @@ namespace BioumRP
     public class FogExtension : MonoBehaviour
     {
         [SerializeField, ColorUsage(false, true)]
-        public Color fogColor = Color.gray;
-        [SerializeField, ColorUsage(false, true)]
-        public Color SunScatteringColor = new Color(0.9f, 0.78f, 0.51f);
-        [SerializeField]
-        public float distanceStart = 0;
+        Color fogColor = Color.gray;
+        //[SerializeField, ColorUsage(false, true)]
+        //Color SunScatteringColor = new Color(0.9f, 0.78f, 0.51f);
+        [SerializeField, Min(0)]
+        float distanceStart = 0;
         [SerializeField, Range(0f, 1f)]
-        public float distanceFalloff = 1;
+        float distanceFalloff = 1;
         [SerializeField]
-        public float heightStart = 0;
+        float heightStart = 0;
         [SerializeField, Range(0f, 2f)]
-        public float heightFalloff = 1;
+        float heightFalloff = 1;
         [SerializeField]
-        public bool distanceFog = false;
+        bool distanceFog = false;
         [SerializeField]
-        public bool heightFog = false;
+        bool heightFog = false;
         [SerializeField]
-        public bool sunScattering = false;
+        bool sunScattering = false;
+        [SerializeField, Range(0,1)]
+        float sunScatteringStrength = 0.5f;
+        [SerializeField, Min(0.1f)]
+        float sunScatteringRange = 4;
+
+        public enum Quality { low, high, }
+        [SerializeField]
+        Quality quality = Quality.low;
 
         void OnEnable()
         {
@@ -46,45 +54,48 @@ namespace BioumRP
 
             if (distanceFog)
             {
-                Shader.EnableKeyword("BIOU_FOG_SIMPLE");
+                Shader.EnableKeyword("BIOUM_FOG_SIMPLE");
             }
             else
             {
-                Shader.DisableKeyword("BIOU_FOG_SIMPLE");
+                Shader.DisableKeyword("BIOUM_FOG_SIMPLE");
             }
 
             if (heightFog)
             {
-                Shader.EnableKeyword("BIOU_FOG_HEIGHT");
+                Shader.EnableKeyword("BIOUM_FOG_HEIGHT");
             }
             else
             {
-                Shader.DisableKeyword("BIOU_FOG_HEIGHT");
+                Shader.DisableKeyword("BIOUM_FOG_HEIGHT");
             }
 
             if (sunScattering && (distanceFog || heightFog))
             {
-                Shader.EnableKeyword("BIOU_FOG_SCATTERING");
+                Shader.EnableKeyword("BIOUM_FOG_SCATTERING");
             }
             else
             {
-                Shader.DisableKeyword("BIOU_FOG_SCATTERING");
+                Shader.DisableKeyword("BIOUM_FOG_SCATTERING");
             }
 
-            if (sunScattering && (distanceFog || heightFog))
+            if (distanceFog || heightFog)
             {
-                //Shader.SetGlobalColor(ShaderUniforms.Scene.FogColor, fogColor);
-                //Shader.SetGlobalColor(ShaderUniforms.Scene.FogSunColor, SunScatteringColor);
-                //Shader.SetGlobalVector(ShaderUniforms.Scene.FogParam, fogParam);
+                Shader.SetGlobalColor("Bioum_FogColor", fogColor);
+                //Shader.SetGlobalColor("Bioum_FogSunColor", SunScatteringColor);
+                Shader.SetGlobalVector("Bioum_FogScatteringParam", new Vector4(sunScatteringStrength, sunScatteringRange, 0, 0));
+                Shader.SetGlobalVector("Bioum_FogParam", fogParam);
+            }
+
+            if (quality == Quality.low)
+            {
+
             }
         }
 
-#if UNITY_EDITOR
-        void Update()
+        void OnValidate()
         {
             SetFogParam();
         }
-#endif
-
     }
 }

@@ -12,6 +12,7 @@ struct Surface
     half3 viewDirection;
     float depth;
     half dither; //for cascade blend
+    half fresnelStrength;
 };
 
 #endif
