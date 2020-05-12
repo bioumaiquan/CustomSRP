@@ -58,6 +58,11 @@ half4 LitFrag(v2f i) : SV_TARGET
         clip(baseMap.a - cutoff);
     #endif
 
+    #if defined(_DITHER)
+		float dither = InterleavedGradientNoise(i.positionCS.xy, 0);
+		clip(baseMap.a - dither);
+	#endif
+
     Surface surface;
     surface.position = i.positionWS;
     surface.normal = normalize(i.normalWS);
