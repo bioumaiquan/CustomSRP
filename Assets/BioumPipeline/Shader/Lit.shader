@@ -4,6 +4,19 @@
     {
         _BaseMap ("Main Tex", 2D) = "white" {}
         _BaseColor ("Color", Color) = (0.5, 0.5, 0.5, 1)
+
+        [Space(10)]
+        [Toggle(SSS)] _SSS ("SSS", float) = 0
+        _SSSColor ("SSS Color", Color) = (0.5, 0.05, 0.01, 1)
+        _SSSMap ("SSS Map", 2D) = "white" {}
+        _SSSNormalScale ("SSS Normal Scale", Range(0,1)) = 0.5
+
+        [Space(10)]
+        [Toggle(NORMAL_MAP)] _UseNormalMap ("Normal Map", float) = 0
+        _NormalMap ("Normal Tex", 2D) = "bump" {}
+        _NormalScale ("Normal Scale", Range(-4, 4)) = 1
+
+        [Space(10)]
         _Metallic ("Metallic", Range(0, 1)) = 0
         _Smoothness ("Smoothness", Range(0, 1)) = 0.5
         _Fresnel ("Fresnel", Range(0, 1)) = 1
@@ -45,9 +58,11 @@
             #pragma multi_compile _ _SHADOW_MASK_ALWAYS _SHADOW_MASK_DISTANCE
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ LOD_FADE_CROSSFADE
-            #pragma multi_compile _ BIOUM_FOG_SIMPLE
-            #pragma multi_compile _ BIOUM_FOG_HEIGHT
-            #pragma multi_compile _ BIOUM_FOG_SCATTERING
+            #pragma shader_feature _ BIOUM_FOG_SIMPLE
+            #pragma shader_feature _ BIOUM_FOG_HEIGHT
+            #pragma shader_feature _ BIOUM_FOG_SCATTERING
+            #pragma shader_feature _ SSS
+            #pragma shader_feature _ NORMAL_MAP
             #pragma vertex LitVert
             #pragma fragment LitFrag
             #include "LitPass.hlsl"

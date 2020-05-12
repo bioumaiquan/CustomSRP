@@ -10,8 +10,6 @@ namespace BioumRP
     {
         [SerializeField, ColorUsage(false, true)]
         Color fogColor = Color.gray;
-        //[SerializeField, ColorUsage(false, true)]
-        //Color SunScatteringColor = new Color(0.9f, 0.78f, 0.51f);
         [SerializeField, Min(0)]
         float distanceStart = 0;
         [SerializeField, Range(0f, 1f)]
@@ -82,7 +80,6 @@ namespace BioumRP
             if (distanceFog || heightFog)
             {
                 Shader.SetGlobalColor("Bioum_FogColor", fogColor);
-                //Shader.SetGlobalColor("Bioum_FogSunColor", SunScatteringColor);
                 Shader.SetGlobalVector("Bioum_FogScatteringParam", new Vector4(sunScatteringStrength, sunScatteringRange, 0, 0));
                 Shader.SetGlobalVector("Bioum_FogParam", fogParam);
             }

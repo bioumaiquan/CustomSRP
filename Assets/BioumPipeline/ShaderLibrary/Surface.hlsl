@@ -5,7 +5,10 @@ struct Surface
 {
     half3 position;
     half3 normal;
+    half3 originalNormal;
     half3 color;
+    half3 SSSColor;
+    half3 SSSNormal;
     half alpha;
     half metallic;
     half smoothness;
